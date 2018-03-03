@@ -15,14 +15,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.SEND"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayMessageActivity" />
 
         <service
-            android:name=".MyJobService"
+            android:name=".MyIntentService"
             android:exported="false"></service>
     </application>
 
