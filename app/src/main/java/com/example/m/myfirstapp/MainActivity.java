@@ -50,16 +50,16 @@ public class MainActivity extends AppCompatActivity {
                 final String param_wifipercent = intent.getStringExtra(EXTRA_PARAM_WIFIPERCENT);
 
                 TextView textview = (TextView) findViewById(R.id.pm25_textview);
-                textview.setText(param_pm25);
+                textview.setText(String.format("%s µg/m3",param_pm25));
 
                 textview = (TextView) findViewById(R.id.pm10_textview);
-                textview.setText(param_pm10);
+                textview.setText(String.format("%s µg/m3",param_pm10));
 
                 textview = (TextView) findViewById(R.id.wifidb_textview);
-                textview.setText(param_wifidb);
+                textview.setText(String.format("-%s dBm",param_wifidb));
 
                 textview = (TextView) findViewById(R.id.wifipercent_textview);
-                textview.setText(param_wifipercent);
+                textview.setText(String.format("%s %%",param_wifipercent));
             }
         }
     };
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         m = wifipercentPattern.matcher(tmp);
         if(m.find()){
-            s[2] = m.group(2);
+            s[3] = m.group(2);
         }
 
         return s;

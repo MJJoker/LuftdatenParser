@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/pm25_textview"
-        android:layout_width="110dp"
+        android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/pm10_textview"
-        android:layout_width="110dp"
+        android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/wifidb_textview"
-        android:layout_width="110dp"
+        android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -52,7 +52,7 @@
 
     <TextView
         android:id="@+id/wifipercent_textview"
-        android:layout_width="110dp"
+        android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
