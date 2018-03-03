@@ -24,8 +24,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_LUFTFEUCHTE;
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_PM10;
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_PM25;
+import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_TEMPERATUR;
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_WIFIDB;
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_WIFIPERCENT;
 
@@ -51,28 +53,36 @@ public class MainActivity extends AppCompatActivity {
                 final String param_pm10 = intent.getStringExtra(EXTRA_PARAM_PM10);
                 final String param_wifidb = intent.getStringExtra(EXTRA_PARAM_WIFIDB);
                 final String param_wifipercent = intent.getStringExtra(EXTRA_PARAM_WIFIPERCENT);
+                final String param_temperatur = intent.getStringExtra(EXTRA_PARAM_TEMPERATUR);
+                final String param_luftfeuchte = intent.getStringExtra(EXTRA_PARAM_LUFTFEUCHTE);
 
+                /* TODO do not display "0" values. */
                 TextView textview = (TextView) findViewById(R.id.pm25_textview);
-                textview.setText(String.format("%s µg/m3",param_pm25));
+                textview.setText(String.format("PM2.5: %s µg/m3",param_pm25));
 
                 textview = (TextView) findViewById(R.id.pm10_textview);
-                textview.setText(String.format("%s µg/m3",param_pm10));
+                textview.setText(String.format("PM10: %s µg/m3",param_pm10));
 
                 textview = (TextView) findViewById(R.id.wifidb_textview);
-                textview.setText(String.format("%s dBm",param_wifidb));
+                textview.setText(String.format("Wifi Signal: %s dBm",param_wifidb));
 
                 textview = (TextView) findViewById(R.id.wifipercent_textview);
-                textview.setText(String.format("%s%%",param_wifipercent));
+                textview.setText(String.format("Wifi Qualitaet: %s%%",param_wifipercent));
 
-                /* TODO print current time to show responsivness */
+                textview = (TextView) findViewById(R.id.temperatur_textview);
+                textview.setText(String.format("Temperatur: %s°C",param_temperatur));
+
+                textview = (TextView) findViewById(R.id.luftfeuchte_textview);
+                textview.setText(String.format("Luftfeuchte: %s%%",param_luftfeuchte));
+
                 textview = (TextView) findViewById(R.id.datetime_textview);
-                textview.setText(String.format("%d:%d:%d",Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE),Calendar.getInstance().get(Calendar.SECOND)));
+                textview.setText(String.format("%02d:%02d:%02d",Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE),Calendar.getInstance().get(Calendar.SECOND)));
             }
         }
     };
 
     public static String[] querySensorValues() {
-        String s[] = {"0","0","0","0"};
+        String s[] = {"0","0","0","0","0","0"};
         String tmp = "";
 
         /*
@@ -82,10 +92,16 @@ public class MainActivity extends AppCompatActivity {
         String pm10Regex = "(PM10)[a-z<>\\/ \\=\\']*([0-9\\.]+)+";
         String wifidbRegex = "(Signal)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
         String wifipercentRegex = "(Qualität)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String temperaturRegex = "(Temperatur)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String luftfeuchteRegex = "(Luftfeuchte)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        /* TODO add Luftfeuchtigkeit */
+        /* TODO add Temperatur */
         Pattern pm25Pattern = Pattern.compile(pm25Regex);
         Pattern pm10Pattern = Pattern.compile(pm10Regex);
         Pattern wifidbPattern = Pattern.compile(wifidbRegex);
         Pattern wifipercentPattern = Pattern.compile(wifipercentRegex);
+        Pattern temperaturPattern = Pattern.compile(temperaturRegex);
+        Pattern luftfeuchtePattern = Pattern.compile(luftfeuchteRegex);
         /*
          * do the HTTP request and download the
          */
@@ -124,6 +140,16 @@ public class MainActivity extends AppCompatActivity {
         m = wifipercentPattern.matcher(tmp);
         if(m.find()){
             s[3] = m.group(2);
+        }
+
+        m = temperaturPattern.matcher(tmp);
+        if(m.find()){
+            s[4] = m.group(2);
+        }
+
+        m = luftfeuchtePattern.matcher(tmp);
+        if(m.find()){
+            s[5] = m.group(2);
         }
 
         return s;

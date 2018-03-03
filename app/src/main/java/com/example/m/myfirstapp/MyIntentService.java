@@ -15,6 +15,8 @@ public class MyIntentService extends IntentService {
     public static final String EXTRA_PARAM_PM10 = "com.myapp.extra.PARAM_PM10";
     public static final String EXTRA_PARAM_WIFIDB = "com.myapp.extra.PARAM_WIFIDB";
     public static final String EXTRA_PARAM_WIFIPERCENT = "com.myapp.extra.PARAM_WIFIPERCENT";
+    public static final String EXTRA_PARAM_LUFTFEUCHTE = "com.myapp.extra.PARAM_LUFTFEUCHTE";
+    public static final String EXTRA_PARAM_TEMPERATUR = "com.myapp.extra.PARAM_TEMPERATUR";
 
 
 
@@ -27,10 +29,7 @@ public class MyIntentService extends IntentService {
     }
 
     public MyIntentService() {
-
         super("MyIntentService");
-
-
     }
 
     @Override
@@ -55,6 +54,8 @@ public class MyIntentService extends IntentService {
         intent.putExtra(EXTRA_PARAM_PM10, params[1]);
         intent.putExtra(EXTRA_PARAM_WIFIDB, params[2]);
         intent.putExtra(EXTRA_PARAM_WIFIPERCENT, params[3]);
+        intent.putExtra(EXTRA_PARAM_TEMPERATUR, params[4]);
+        intent.putExtra(EXTRA_PARAM_LUFTFEUCHTE, params[5]);
 
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.sendBroadcast(intent);
