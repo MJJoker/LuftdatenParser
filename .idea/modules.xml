@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LuftdatenParser.iml" filepath="$PROJECT_DIR$/LuftdatenParser.iml" />
-      <module fileurl="file://C:\Users\M\StudioProjects\LuftdatenParser\MyfirstApp.iml" filepath="C:\Users\M\StudioProjects\LuftdatenParser\MyfirstApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

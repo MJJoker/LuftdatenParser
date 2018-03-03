@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,10 +59,14 @@ public class MainActivity extends AppCompatActivity {
                 textview.setText(String.format("%s µg/m3",param_pm10));
 
                 textview = (TextView) findViewById(R.id.wifidb_textview);
-                textview.setText(String.format("-%s dBm",param_wifidb));
+                textview.setText(String.format("%s dBm",param_wifidb));
 
                 textview = (TextView) findViewById(R.id.wifipercent_textview);
-                textview.setText(String.format("%s %%",param_wifipercent));
+                textview.setText(String.format("%s%%",param_wifipercent));
+
+                /* TODO print current time to show responsivness */
+                textview = (TextView) findViewById(R.id.datetime_textview);
+                textview.setText(String.format("%d:%d:%d",Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE),Calendar.getInstance().get(Calendar.SECOND)));
             }
         }
     };
@@ -83,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
          * do the HTTP request and download the
          */
         Request request = new Request.Builder()
-                .url("http://192.168.10.1/values")
+                /* TODO search for device within network?! */
+                .url("http://192.168.43.234/values") /* 192.168.43.234 */
                 .build();
         try {
             Response response = client.newCall(request).execute();
