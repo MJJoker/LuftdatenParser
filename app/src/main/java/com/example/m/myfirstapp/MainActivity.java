@@ -10,14 +10,13 @@ import android.os.CountDownTimer;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.m.myfirstapp.R.id;
 import com.example.m.myfirstapp.R.layout;
+import com.example.m.myfirstapp.utilities.LuftdatenLogger;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_LUFTFEUCHTE;
 import static com.example.m.myfirstapp.MyIntentService.EXTRA_PARAM_PM10;
@@ -38,14 +38,9 @@ public class MainActivity extends Activity {
 
 
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    public static final int MSG_UNCOLOR_START = 0;
-    public static final int MSG_UNCOLOR_STOP = 1;
-    public static final int MSG_COLOR_START = 2;
-    public static final int MSG_COLOR_STOP = 3;
-    private static OkHttpClient client;
 
 
-    private CountDownTimer downcounter;
+    private CountDownTimer m_downcounter;
 
     // handler for received data from service
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -60,43 +55,46 @@ public class MainActivity extends Activity {
                 String param_luftfeuchte = intent.getStringExtra(EXTRA_PARAM_LUFTFEUCHTE);
 
                 /* TODO do not display "0" values. */
-                TextView textview = (TextView) MainActivity.this.findViewById(id.pm25_textview);
+                TextView textview = MainActivity.this.findViewById(id.pm25_textview);
                 textview.setText(String.format("PM2.5: %s µg/m3",param_pm25));
 
-                textview = (TextView) MainActivity.this.findViewById(id.pm10_textview);
+                textview = findViewById(id.pm10_textview);
                 textview.setText(String.format("PM10: %s µg/m3",param_pm10));
 
-                textview = (TextView) MainActivity.this.findViewById(id.wifidb_textview);
+                textview = findViewById(id.wifidb_textview);
                 textview.setText(String.format("Wifi Signal: %s dBm",param_wifidb));
 
-                textview = (TextView) MainActivity.this.findViewById(id.wifipercent_textview);
+                textview = findViewById(id.wifipercent_textview);
                 textview.setText(String.format("Wifi Qualitaet: %s%%",param_wifipercent));
 
-                textview = (TextView) MainActivity.this.findViewById(id.temperatur_textview);
+                textview = findViewById(id.temperatur_textview);
                 textview.setText(String.format("Temperatur: %s°C",param_temperatur));
 
-                textview = (TextView) MainActivity.this.findViewById(id.luftfeuchte_textview);
+                textview = findViewById(id.luftfeuchte_textview);
                 textview.setText(String.format("Luftfeuchte: %s%%",param_luftfeuchte));
 
-                textview = (TextView) MainActivity.this.findViewById(id.datetime_textview);
+                textview = findViewById(id.datetime_textview);
                 textview.setText(String.format("%02d:%02d:%02d",Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE),Calendar.getInstance().get(Calendar.SECOND)));
             }
         }
     };
 
     public static String[] querySensorValues() {
-        String s[] = {"0","0","0","0","0","0"};
+        OkHttpClient client = new OkHttpClient();
+        ResponseBody resBody;
+        String s[] = {"0","0","0","0","0","0","0"};
         String tmp = null;
 
         /*
          * compile the regular expression to be ready to run
          * */
-        final String pm25Regex = "(PM2.5)[a-z<>\\/ \\=\\']*([0-9\\.]+)+";
-        final String pm10Regex = "(PM10)[a-z<>\\/ \\=\\']*([0-9\\.]+)+";
-        final String wifidbRegex = "(Signal)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
-        final String wifipercentRegex = "(Qualität)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
-        final String temperaturRegex = "(Temperatur)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
-        final String luftfeuchteRegex = "(Luftfeuchte)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String pm25Regex = "(PM2.5)[a-z<>\\/ \\=\\']*([0-9\\.]+)+";
+        String pm10Regex = "(PM10)[a-z<>\\/ \\=\\']*([0-9\\.]+)+";
+        String wifidbRegex = "(Signal)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String wifipercentRegex = "(Qualität)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String temperaturRegex = "(Temperatur)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String luftfeuchteRegex = "(Luftfeuchte)(?:[<>\\/a-z \\=']+)([0-9\\.-]+)";
+        String SensorIdRegex = "(ID:)(?:[<>\\/a-z \\=']+)([0-9]{3,})";
         /* TODO add Luftfeuchtigkeit */
         /* TODO add Temperatur */
         Pattern pm25Pattern = Pattern.compile(pm25Regex);
@@ -105,31 +103,43 @@ public class MainActivity extends Activity {
         Pattern wifipercentPattern = Pattern.compile(wifipercentRegex);
         Pattern temperaturPattern = Pattern.compile(temperaturRegex);
         Pattern luftfeuchtePattern = Pattern.compile(luftfeuchteRegex);
+        Pattern SensorIdPattern = Pattern.compile(SensorIdRegex);
         /*
          * do the HTTP request and download the
          */
         Request request = new Builder()
                 /* TODO search for device within network?! */
-                .url("http://192.168.10.1/values") /* 192.168.43.234 */
+                /*ESP_403723 -> Sensor Marco */
+                /* 192.168.43.21 -> IP Marco */
+                /* 192.168.43.234 -> IP Michael */
+                .url("http://192.168.43.21/values")
                 .build();
         try {
-            Response response = MainActivity.client.newCall(request).execute();
+            Response response = client.newCall(request).execute();
             if (response != null) {
-                Log.d("querySensorValues","query finished!");
-                Log.d("querySensorValues", String.format("HTTP Status code %d", response.code()));
-                Log.d("querySensorValues", String.format("HTTP Status message %s", response.message()));
+                LuftdatenLogger.d("querySensorValues","query finished!");
+                LuftdatenLogger.d("querySensorValues", String.format("HTTP Status code %d", response.code()));
+                LuftdatenLogger.d("querySensorValues", String.format("HTTP Status message %s", response.message()));
                 if (response.isSuccessful()) {
-                    tmp = response.body().string();
-                    Log.v("querySensorValues", tmp);
+                    resBody = response.body();
+
+                    // if we have a responseBody and the HTTP StatusCode is 200 (everything OK)
+                    if(resBody != null && response.code() == 200) {
+                        tmp = response.body().string();
+                        LuftdatenLogger.v("querySensorValues", tmp);
+                    } else {
+                        /* not sure in which situation this can happen  */
+                        tmp = "";
+                    }
                     response.close();
                 }
             }
         } catch (IOException ioex) {
-            Log.wtf("querySensorValues",ioex);
-            Log.getStackTraceString(ioex);
+            LuftdatenLogger.wtf("querySensorValues",ioex);
+            LuftdatenLogger.getStackTraceString(ioex);
             tmp = "";
-        }finally {
-            if(tmp == null)
+        } finally {
+            if(null == tmp)
             {
                 tmp = "";
             }
@@ -165,6 +175,11 @@ public class MainActivity extends Activity {
             s[5] = m.group(2);
         }
 
+        m = SensorIdPattern.matcher(tmp);
+        if(m.find()) {
+            s[6] = m.group(2);
+        }
+
         return s;
     }
 
@@ -173,42 +188,37 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.setContentView(layout.activity_main);
 
-        MainActivity.client = new OkHttpClient();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(MyIntentService.BROADCAST_ACTION_BAZ);
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.registerReceiver(this.mBroadcastReceiver, filter);
 
-        this.downcounter = new CountDownTimer(Long.MAX_VALUE, 70000) {
+        m_downcounter = new CountDownTimer(Long.MAX_VALUE, 70000) {
             @Override
             public void onTick(long l) {
-                Log.d("DownCounter",String.valueOf(l));
-                MyIntentService.startActionFoo(MainActivity.this, "test2");
+                LuftdatenLogger.d("DownCounter",String.valueOf(l));
+                //MyIntentService.startActionTakeSample(MainActivity.this);
             }
 
             @Override
             public void onFinish() {
-                Log.d("DownCounter","finished");
+                LuftdatenLogger.d("DownCounter","finished");
                 this.start();
             }
         }.start();
-    }
+
+        MyIntentService.startActionDumpDB(this);
 
     @Override
     protected void onDestroy() {
         LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
         bm.unregisterReceiver(this.mBroadcastReceiver);
-        MainActivity.client = null;
         super.onDestroy();
     }
 
-    public void sendMessage(View view) {
+    public void sendMessage(View view){
 
-    }
+        MyIntentService.startActionFindSensor(this);
 
-    // send data to MyService
-    protected void communicateToService(String parameter) {
-        MyIntentService.startActionFoo(this, parameter);
     }
 }
