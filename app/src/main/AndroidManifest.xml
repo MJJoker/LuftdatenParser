@@ -14,15 +14,19 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND" />
             </intent-filter>
         </activity>
 
         <service
             android:name=".MyIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".DeviceOverview" />
+        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>
