@@ -1,9 +1,10 @@
 package com.example.m.myfirstapp;
 
-import android.support.v7.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.os.Bundle;
 
-public class Main2Activity extends AppCompatActivity {
+public class Main2Activity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
