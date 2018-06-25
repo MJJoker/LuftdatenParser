@@ -1,8 +1,15 @@
+#generated/temporary/downloaded stuff should not be in git
 .gradle/
+#generated stuff should not be in git
 .idea/
 .DS_Store
+#file contian pathes to local tools, etc. should not be in git
 local.properties
+#compile output should not be in git
 build/
 captures/
 .externalNativeBuild
+#generated stuff should not be in git
 **/*.iml
+#generated stuff should not be in git
+app/src/main/gen/
