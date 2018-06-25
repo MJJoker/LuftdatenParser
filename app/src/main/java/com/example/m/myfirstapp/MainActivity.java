@@ -196,18 +196,19 @@ public class MainActivity extends Activity {
         m_downcounter = new CountDownTimer(Long.MAX_VALUE, 70000) {
             @Override
             public void onTick(long l) {
-                LuftdatenLogger.d("DownCounter",String.valueOf(l));
+                LuftdatenLogger.d("DownCounter", String.valueOf(l));
                 //MyIntentService.startActionTakeSample(MainActivity.this);
             }
 
             @Override
             public void onFinish() {
-                LuftdatenLogger.d("DownCounter","finished");
+                LuftdatenLogger.d("DownCounter", "finished");
                 this.start();
             }
         }.start();
 
         MyIntentService.startActionDumpDB(this);
+    }
 
     @Override
     protected void onDestroy() {
