@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.0 rc1'
+    buildToolsVersion '27.0.3'
     defaultConfig {
 
-        applicationId "com.example.m.myfirstapp"
+        applicationId "de.ocramindustrie.luftdatenparser"
         minSdkVersion 17 /* support minimum of API17 */
-        targetSdkVersion 27
-        versionCode 2
+        targetSdkVersion 25
+        versionCode 3
         versionName "1.1"
 
         project.ext.set("archivesBaseName", "LuftdatenParser");
@@ -31,7 +31,6 @@ android {
                     'proguard-sqlite.pro',
                     'proguard-okhttp.pro',
                     'proguard-rules.pro'
-
         }
     }
 
@@ -48,11 +47,10 @@ android {
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     // Room (use 1.1.0-alpha3 for latest alpha)
-    compile 'android.arch.persistence.room:runtime:1.0.0'
+    implementation 'android.arch.persistence.room:runtime:1.0.0'
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     // Test helpers for Room
     //testImplementation "android.arch.persistence.room:testing:1.0.0"
