@@ -1,7 +1,8 @@
 package com.example.m.myfirstapp.utilities;
 
-import android.arch.persistence.db.framework.BuildConfig;
 import android.util.Log;
+
+import com.example.m.myfirstapp.BuildConfig;
 
 
 /**
