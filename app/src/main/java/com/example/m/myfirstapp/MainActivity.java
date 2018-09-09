@@ -110,9 +110,10 @@ public class MainActivity extends Activity {
         Request request = new Builder()
                 /* TODO search for device within network?! */
                 /*ESP_403723 -> Sensor Marco */
-                /* 192.168.43.21 -> IP Marco */
+                /* 192.168.43.21 -> IP Marco (in it's own wlan) */
+                /* 192.168.10.1 -> IP Marco (in it's local wlan) */
                 /* 192.168.43.234 -> IP Michael */
-                .url("http://192.168.43.21/values")
+                .url("http://192.168.10.1/values")
                 .build();
         try {
             Response response = client.newCall(request).execute();
@@ -197,7 +198,7 @@ public class MainActivity extends Activity {
             @Override
             public void onTick(long l) {
                 LuftdatenLogger.d("DownCounter", String.valueOf(l));
-                //MyIntentService.startActionTakeSample(MainActivity.this);
+                MyIntentService.startActionTakeSample(MainActivity.this);
             }
 
             @Override

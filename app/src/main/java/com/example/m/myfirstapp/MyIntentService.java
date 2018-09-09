@@ -97,7 +97,7 @@ public class MyIntentService extends IntentService {
                     boolean isIPv4 = sAddr.indexOf(':') < 0;
 
                     if (isIPv4) {
-                        OkHttpClient okclient = new OkHttpClient.Builder().readTimeout(10, TimeUnit.SECONDS).connectTimeout(10, TimeUnit.SECONDS).build();
+                        OkHttpClient okclient = new OkHttpClient.Builder().readTimeout(10   , TimeUnit.SECONDS).connectTimeout(10, TimeUnit.SECONDS).build();
 
 
                         for (int lastbyte = 1; lastbyte <= 254; ++lastbyte) {
@@ -112,7 +112,7 @@ public class MyIntentService extends IntentService {
                                 Response res = okclient.newCall(request).execute();
                                 if (null != res) {
                                     if (res.isSuccessful()) {
-                                        LuftdatenLogger.d("FindSensor", String.format("Found the damn sensor: %d.%d.%d.%d- %s", (ip[1] & 0xFF), (ip[2]&0xFF), (ip[3]&0xFF),newaddress));
+                                        LuftdatenLogger.d("FindSensor", String.format("Found the damn sensor: %d.%d.%d.%d- %s", (ip[0] & 0xFF), (ip[1] & 0xFF), (ip[2]&0xFF), (ip[3]&0xFF),newaddress));
                                         return;
                                     } else {
                                         LuftdatenLogger.d("FindSensor", String.format("not sensor there: %d.%d.%d.%d - %s", (ip[0] & 0xFF), (ip[1] & 0xFF), (ip[2]&0xFF), (ip[3]&0xFF),newaddress));
@@ -123,7 +123,7 @@ public class MyIntentService extends IntentService {
                                 }
                             } catch(Exception ex)
                             {
-                                //LuftdatenLogger.wtf("FindSensor",ex);
+                                LuftdatenLogger.wtf("FindSensor",ex);
                             }
                         }
                     }
